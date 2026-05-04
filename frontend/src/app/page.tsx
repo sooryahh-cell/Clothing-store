@@ -59,7 +59,7 @@ export default async function Home() {
             </div>
           </Link>
           <Link href="/products?category=Women's" className={styles.categoryCard}>
-            <Image src="https://images.unsplash.com/photo-1539697805494-b295cb1d326c?q=80&w=800&auto=format&fit=crop" alt="Womens Division" fill className={styles.categoryImage} />
+            <Image src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=800&auto=format&fit=crop" alt="Womens Division" fill className={styles.categoryImage} />
             <div className={styles.categoryOverlay}>
               <h3 className={styles.categoryTitle}>WOMEN'S <span className={styles.neonAccent}>DIVISION</span></h3>
             </div>

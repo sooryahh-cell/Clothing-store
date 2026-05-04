@@ -108,7 +108,8 @@ export async function getProducts(): Promise<Product[]> {
     });
     
     if (!res.ok) {
-      throw new Error(`Failed to fetch products: ${res.status}`);
+      console.warn(`⚠️ Backend returned ${res.status}. Falling back to mock data.`);
+      return mockProducts;
     }
     
     const data = await res.json();
