@@ -28,8 +28,10 @@ export default function LoginPage() {
     setError("");
     setSuccess(false);
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
     try {
-      const res = await fetch("https://terrafit-e169.onrender.com/api/auth/login", {
+      const res = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -46,7 +48,7 @@ export default function LoginPage() {
         setError(data.error || "Login failed. Please check your credentials.");
       }
     } catch (err) {
-      setError("Cannot connect to server. Please make sure the backend is running on port 5000.");
+      setError(`Cannot connect to server at ${apiUrl}. If using Render, it may be waking up—please wait 30 seconds and try again.`);
     } finally {
       setIsLoading(false);
     }

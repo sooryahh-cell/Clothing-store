@@ -102,8 +102,10 @@ export const mockProducts: Product[] = [
 ];
 
 export async function getProducts(): Promise<Product[]> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  
   try {
-    const res = await fetch('https://terrafit-e169.onrender.com/api/products', { 
+    const res = await fetch(`${apiUrl}/api/products`, { 
       next: { revalidate: 60 } 
     });
     

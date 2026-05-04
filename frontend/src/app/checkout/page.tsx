@@ -36,8 +36,10 @@ export default function CheckoutPage() {
     const formData = new FormData(form);
     const shippingDetails = Object.fromEntries(formData.entries());
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
     try {
-      const res = await fetch("https://terrafit-e169.onrender.com/api/orders", {
+      const res = await fetch(`${apiUrl}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
