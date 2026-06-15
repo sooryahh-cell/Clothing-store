@@ -7,16 +7,11 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const sheets = require('../services/sheets');
 
-// Initialize Razorpay lazily to avoid crash on startup if keys are missing
-function getRazorpay() {
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-        throw new Error('Razorpay keys not configured');
-    }
-    return new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID,
-        key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
-}
+// Initialize Razorpay
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 // GET my orders (for profile page)
 router.get('/my-orders', auth, async (req, res) => {
@@ -59,7 +54,7 @@ router.post('/', auth, async (req, res) => {
             receipt: `order_rcptid_${Date.now()}`,
         };
 
-        const razorpayOrder = await getRazorpay().orders.create(options);
+        const razorpayOrder = await razorpay.orders.create(options);
 
         // 2. Save Order in XAMPP MySQL using Sequelize
         const newOrder = await Order.create({
@@ -162,7 +157,7 @@ router.post('/callback', async (req, res) => {
 
         const isAuthentic = expectedSignature === razorpay_signature;
 
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const frontendUrl = 'http://localhost:3000'; // Change to production URL later
 
         if (isAuthentic) {
             // Update order status in MySQL DB
