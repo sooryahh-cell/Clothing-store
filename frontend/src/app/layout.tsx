@@ -6,16 +6,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WaveBackground from "@/components/WaveBackground";
 import FloatingTshirts from "@/components/FloatingTshirts";
-
-
-
-
+import LoadingScreen from "@/components/LoadingScreen";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Terra Fit | Premium Activewear",
-  description: "Premium mobile eCommerce app for activewear, shoes, and smartwatches.",
+  description: "Premium eCommerce app for activewear, shoes, and high-performance apparel.",
 };
 
 export default function RootLayout({
@@ -26,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.variable}>
+        <LoadingScreen />
         <WaveBackground />
         <FloatingTshirts />
         <CartProvider>
@@ -35,7 +34,12 @@ export default function RootLayout({
           </main>
           <Footer />
         </CartProvider>
+        <Script 
+          src="https://accounts.google.com/gsi/client" 
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
 }
+

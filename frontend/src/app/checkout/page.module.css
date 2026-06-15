@@ -226,3 +226,8 @@
   border-color: var(--primary);
   color: var(--primary);
 }
+
+.backButton:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

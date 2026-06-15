@@ -15,16 +15,15 @@ export default function Footer() {
             <h3>Shop</h3>
             <Link href="/products?category=Shoes">Shoes</Link>
             <Link href="/products?category=Apparel">Apparel</Link>
-            <Link href="/products?category=Watches">Watches</Link>
+            <Link href="/products">All Gear</Link>
           </div>
           <div className={styles.linkGroup}>
             <h3>Support</h3>
-            <Link href="#">FAQ</Link>
-            <Link href="#">Shipping</Link>
+            <Link href="/faq">FAQ</Link>
           </div>
           <div className={styles.linkGroup}>
             <h3>Contact</h3>
-            <a href="mailto:terrafit7.business@gmail.com" className={styles.contactLink}>Email</a>
+            <Link href="/contact" className={styles.contactLink}>Email</Link>
             <a href="https://wa.me/919567232977" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>WhatsApp</a>
             <a href="https://www.instagram.com/sooryah__h/?__pwa=1#" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>Instagram</a>
           </div>

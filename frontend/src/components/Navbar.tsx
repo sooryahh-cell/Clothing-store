@@ -69,13 +69,14 @@ export default function Navbar() {
           </div>
         </div>
         <nav className={styles.navLinks}>
-          <Link href="/products?category=Men's" className={styles.link}>MEN&apos;S</Link>
-          <Link href="/products?category=Women's" className={styles.link}>WOMEN&apos;S</Link>
+          <Link href="/products?category=Shoes" className={styles.link}>SHOES</Link>
+          <Link href="/products?category=Apparel" className={styles.link}>APPAREL</Link>
+          <Link href="/products" className={styles.link}>ALL GEAR</Link>
         </nav>
         <div className={styles.cartContainer}>
           {user ? (
             <div className={styles.userMenu}>
-              <span className={styles.userName}>👤 {user.name.split(" ")[0]}</span>
+              <Link href="/profile" className={styles.userName}>👤 {user.name.split(" ")[0]}</Link>
               <button onClick={handleLogout} className={styles.logoutButton}>
                 Logout
               </button>

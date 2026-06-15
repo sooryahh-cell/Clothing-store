@@ -158,3 +158,68 @@
 .switchLink:hover {
   text-decoration: underline;
 }
+
+.forgotPassword {
+  display: block;
+  text-align: right;
+  font-size: 0.875rem;
+  color: var(--primary);
+  margin-top: 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.backToLogin {
+  display: block;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  cursor: pointer;
+}
+
+.backToLogin:hover {
+  color: var(--foreground);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.divider:not(:empty)::before {
+  margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+  margin-left: .5em;
+}
+
+.googleContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.googleButton {
+  min-height: 40px;
+  width: 100%;
+}
+

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
@@ -22,6 +22,11 @@ export default function RegisterPage() {
 
     if (!name || !email || !password) {
       setError("Please fill in all fields.");
+      return;
+    }
+
+    if (/\d/.test(name)) {
+      setError("Name cannot contain numbers.");
       return;
     }
 
@@ -58,6 +63,79 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleLogin = async (response: any) => {
+    setIsLoading(true);
+    setError("");
+    setSuccess(false);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+    try {
+      const res = await fetch(`${apiUrl}/api/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: response.credential }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("storage"));
+        setSuccess(true);
+        setTimeout(() => router.push("/"), 1000);
+      } else {
+        setError(data.error || "Google login failed.");
+      }
+    } catch (err) {
+      setError("Cannot connect to server. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const initializeGoogle = () => {
+      const google = (window as any).google;
+      if (typeof window !== "undefined" && google) {
+        try {
+          google.accounts.id.initialize({
+            client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID",
+            callback: handleGoogleLogin,
+          });
+
+          const btnElement = document.getElementById("google-signin-btn");
+          if (btnElement) {
+            google.accounts.id.renderButton(btnElement, {
+              theme: "filled_black",
+              size: "large",
+              width: btnElement.clientWidth || 380,
+              shape: "pill",
+            });
+          }
+        } catch (e) {
+          console.error("Google script initialization failed:", e);
+        }
+      }
+    };
+
+    const google = (window as any).google;
+    if (typeof window !== "undefined" && google) {
+      initializeGoogle();
+    } else {
+      const interval = setInterval(() => {
+        const googleCheck = (window as any).google;
+        if (typeof window !== "undefined" && googleCheck) {
+          initializeGoogle();
+          clearInterval(interval);
+        }
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+
   return (
     <div className={`container ${styles.page}`}>
       <div className={styles.registerCard}>
@@ -79,6 +157,8 @@ export default function RegisterPage() {
               required
               autoComplete="name"
               placeholder="John Doe"
+              pattern="^[^\d]+$"
+              title="Name cannot contain numbers"
             />
           </div>
 
@@ -135,6 +215,14 @@ export default function RegisterPage() {
           <button type="submit" className={styles.submitButton} disabled={isLoading || success}>
             {isLoading ? "Creating Account..." : "Sign Up"}
           </button>
+
+          <div className={styles.divider}>
+            <span>or</span>
+          </div>
+
+          <div className={styles.googleContainer}>
+            <div id="google-signin-btn" className={styles.googleButton}></div>
+          </div>
         </form>
 
         <p className={styles.switchText}>

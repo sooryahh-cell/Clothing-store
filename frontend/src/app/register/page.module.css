@@ -158,3 +158,41 @@
 .switchLink:hover {
   text-decoration: underline;
 }
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.divider:not(:empty)::before {
+  margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+  margin-left: .5em;
+}
+
+.googleContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.googleButton {
+  min-height: 40px;
+  width: 100%;
+}
+

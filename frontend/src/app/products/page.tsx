@@ -15,8 +15,8 @@ export default async function ProductsPage(
   
   let filteredProducts = allProducts;
 
-  // Filter by category
-  if (currentCategory !== "All") {
+  // Filter by category - only if not searching
+  if (currentCategory !== "All" && !searchQuery) {
     filteredProducts = filteredProducts.filter((p) => p.category === currentCategory);
   }
 
@@ -30,7 +30,7 @@ export default async function ProductsPage(
   }
 
 
-  const categories = ["All", "Men's", "Women's"];
+  const categories = ["All", "Men's", "Women's", "Shoes", "Apparel"];
 
   return (
     <div className={`container ${styles.page}`}>

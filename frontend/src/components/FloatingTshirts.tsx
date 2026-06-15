@@ -60,6 +60,7 @@ const FloatingTshirts = () => {
             src="/assets/tshirt.png"
             alt="Floating T-shirt"
             fill
+            sizes="400px"
             style={{ objectFit: 'contain', animation: `float ${10 + t.id * 2}s infinite ease-in-out ${t.delay}` }}
           />
         </div>

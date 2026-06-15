@@ -23,3 +23,7 @@ Thumbs.db
 
 # IDE
 .vscode/settings.json
+
+# Google Service Account credentials (NEVER commit)
+backend/google-service-account.json
+google-service-account.json

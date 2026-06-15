@@ -4,25 +4,45 @@ import React, { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import styles from "./page.module.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-// 👇 Replace this with your actual Razorpay payment link
-const RAZORPAY_PAYMENT_LINK = "https://rzp.io/l/YOUR_RAZORPAY_LINK";
-
+// Extend window object to include Razorpay
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
+
+  const loadScript = (src: string) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setIsSubmitting(true);
     setError("");
 
     const token = localStorage.getItem('token');
     if (!token) {
       alert('Please login first!');
-      window.location.href = '/login';
+      router.push('/login');
       return;
     }
 
@@ -32,13 +52,25 @@ export default function CheckoutPage() {
       return;
     }
 
-    const form = e.currentTarget;
     const formData = new FormData(form);
     const shippingDetails = Object.fromEntries(formData.entries());
 
+    // 1. Load Razorpay Script
+    const resScript = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+    if (!resScript) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      setIsSubmitting(false);
+      return;
+    }
+
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+    const finalTotal = Number(cartTotal);
+    console.log(`Final Total being sent: ${finalTotal}`);
+
     try {
+      // 2. Create Order on Backend
       const res = await fetch(`${apiUrl}/api/orders`, {
         method: "POST",
         headers: {
@@ -48,22 +80,43 @@ export default function CheckoutPage() {
         body: JSON.stringify({ 
           items: cart,
           shippingDetails,
-          total: cartTotal
+          total: finalTotal
         }),
       });
 
       const data = await res.json();
 
-      if (res.ok) {
-        clearCart();
-        // Redirect to Razorpay for payment
-        window.location.href = RAZORPAY_PAYMENT_LINK;
-      } else {
-        setError(data.error || "There was a problem placing your order. Please try again.");
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to create order");
       }
-    } catch (err) {
+
+      // 3. Initialize Razorpay Payment
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Terra Fit",
+        description: "Purchase from Terra Fit store",
+        image: "/logo.png",
+        order_id: data.order_id,
+        callback_url: `${apiUrl}/api/orders/callback`,
+        redirect: true,
+        prefill: {
+          name: `${shippingDetails.firstName} ${shippingDetails.lastName}`,
+          email: shippingDetails.email,
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#000000",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (err: any) {
       console.error(err);
-      setError("An error occurred. Make sure the backend server is running.");
+      setError(err.message || "An error occurred. Make sure the backend server is running.");
     } finally {
       setIsSubmitting(false);
     }
@@ -125,10 +178,10 @@ export default function CheckoutPage() {
               className={styles.submitButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "PROCESSING..." : "PLACE ORDER & PAY"}
+              {isSubmitting ? "PROCESSING..." : `PAY ₹${cartTotal.toFixed(2)} WITH RAZORPAY`}
             </button>
             <p className={styles.disclaimer}>
-              You will be redirected to Razorpay to complete your secure payment.
+              Secure payment powered by Razorpay.
             </p>
           </form>
         </div>
@@ -171,3 +224,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

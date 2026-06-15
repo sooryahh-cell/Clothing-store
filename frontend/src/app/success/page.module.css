@@ -1,0 +1,51 @@
+.successPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+}
+
+.successCard {
+  background-color: var(--card);
+  padding: 4rem 2rem;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  max-width: 500px;
+  width: 100%;
+}
+
+.iconWrapper {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.homeButton {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.homeButton:hover {
+  transform: translateY(-2px);
+}
